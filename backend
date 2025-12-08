@@ -1,0 +1,35 @@
+import pyaudio
+from socket import*
+
+def playaudio(s):
+    audio = pyaudio.PyAudio()
+    stream = audio.open(format = pyaudio.paInt16, channels = 1,
+    rate = 44100, output = True, frames_per_buffer = 1024)
+    try:
+        while True:
+            data.recv(1024)
+            if not data:
+                break
+            stream.write(data)
+
+    except:
+        print(addr,"duan kai lian jie")
+
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+
+S = socket()
+S.bind(('0.0.0.0',8848))
+S.listen()
+
+while True:
+    s,addr = S.accept()
+    print("got it!",addr)
+    playaudio(s)
+    s.close()
+    print("lian jie zhong duan")
+    
+
+
+
